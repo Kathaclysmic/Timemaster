@@ -58,12 +58,12 @@
       <!--Area for editing the timeline-->
       <div class="columns is-multiline is-mobile has-background-dark">
         <!--Area for displaying different timelines-->
-        <div class="column is-full">
+        <div class="column">
           <div class="box">
             <!--timelinelist-->
-            <ul>
+            <ul class="columns">
               <li v-for="(timeline, index) in this.timelines" :key="index">
-                <timeline :name="timelines[index].name"> </timeline>
+                <timeline :name="timelines[index].name" :events="events" class="column is-full"> </timeline>
               </li>
             </ul>
           </div>
@@ -75,6 +75,7 @@
     v-if="addCharacter"
     @close="this.addCharacter = !this.addCharacter"
     @handleInput="createCharacter"
+    @handleTimeline="createTimeline"
     class="column is-full"
   ></popup>
 </template>
@@ -101,22 +102,59 @@ export default {
         {
           name: "Calender",
           intervals: 0,
+          events: [0]
         },
       ],
       characters: [
         {
           name: "Jane Doe",
+          timeline: 0
         },
+        {
+          name: "Gary Stue",
+          timeline: 1
+        }
+      ],
+      events: [
+        {
+          name: "Start",
+          start: 0,
+          end: 1,
+          description: "Lorem Ipsum",
+          characters: [0],
+          id: 0
+        }
       ],
       showSideBar,
       addCharacter,
     };
+  },
+  created() {
+    for(let i = 0; i<this.characters.length; i++){
+      if(this.characters[i].timeline == 1){
+        this.timelines.push(
+          {name: this.characters[i].name,
+          intervals: this.timelines[0].intervals}
+        )
+      }
+    }
   },
   methods: {
     createCharacter(value){
       console.log(value)
       console.log("createcharacter")
       this.characters.push({name: value})
+      console.log(this.characters.length)
+    },
+    createTimeline(value){
+      var arrayL = this.characters.length-1
+      if(value){
+        this.timelines.push({
+        name: this.characters[arrayL].name, 
+        timeline: 1,
+        intervals: this.timelines[0].intervals
+        })
+      }
     }
   },
 };
