@@ -1,13 +1,12 @@
 <template>
-  <div class="columns is-multiline is-mobile">
+  <div class="columns is-mobile">
     <!--Menu for editing the timelines-->
-    <div v-if="showSideBar" class="column is-2" id="sidebar">
+    <div v-if="showSideBar" class="column is-3" id="sidebar">
       <div>
         <aside class="column is-full menu is-pulled-left">
           <!--Button for toggeling sidebar-->
           <div>
             <div
-              
               id="hidesidebar"
               class="button is-ghost is-flex"
               @click="this.showSideBar = !this.showSideBar"
@@ -21,13 +20,37 @@
             <p class="menu-label">Events</p>
             <ul class="menu-list">
               <li><a>Add new event</a></li>
-              <li><a>Event A</a></li>
+              <li v-for="(event, index) in this.events" :key="index">
+                <button
+                  class="button is-white"
+                  @click="
+                    this.showEventEdits[index] = !this.showEventEdits[index]
+                  "
+                >
+                  {{ events[index].name }}
+                </button>
+                <ul v-if="this.showEventEdits[index]">
+                  <li><a>Edit Event</a></li>
+                  <li><a>Delete Event</a></li>
+                </ul>
+              </li>
             </ul>
             <p class="menu-label">Characters</p>
             <ul class="menu-list">
-              <li @click="addCharacter = true"><a>Add new character</a></li>
+              <li @click="addCharacter = true">
+                <a>Add new character</a>
+              </li>
               <li v-for="(character, index) in this.characters" :key="index">
-                <a>{{ characters[index].name }}</a>
+                <button
+                  class="button is-white"
+                  @click="this.showCharacterEdits[index] = !this.showCharacterEdits[index]">
+                  {{ characters[index].name }}
+                </button>
+                <ul v-if="this.showCharacterEdits[index]">
+                  <li><a>Edit Character</a></li>
+                  <li><a>Show Timeline</a> </li>
+                  <li><a>Delete Character</a></li>
+                </ul>
               </li>
             </ul>
             <p class="menu-label">Universe</p>
@@ -41,7 +64,7 @@
     </div>
     <div
       id="openmenu"
-      class="button is-ghost column is-1"
+      class="button is-pulled-right is-ghost"
       @click="this.showSideBar = !this.showSideBar"
       v-if="!showSideBar"
     >
@@ -50,20 +73,25 @@
       </figure>
     </div>
     <!--Editing area-->
-    <div id="editingarea" class="column is-auto">
+    <div class="column is-auto">
       <!--Title of the Universe-->
-      <div class="title">
+      <div class="title is-fixed">
         <p>Universe Name</p>
       </div>
       <!--Area for editing the timeline-->
-      <div class="columns is-multiline is-mobile has-background-dark">
+      <div id="editingarea" class=" column is-auto columns is-multiline is-mobile">
         <!--Area for displaying different timelines-->
         <div class="column">
-          <div class="box">
+          <div class="box is-flex">
             <!--timelinelist-->
             <ul class="columns">
               <li v-for="(timeline, index) in this.timelines" :key="index">
-                <timeline :name="timelines[index].name" :events="events" class="column is-full"> </timeline>
+                <timeline
+                  :name="timelines[index].name"
+                  :events="events"
+                  class="column is-full"
+                >
+                </timeline>
               </li>
             </ul>
           </div>
@@ -88,6 +116,8 @@ import popup from "../components/PopUp.vue";
 //Flags for showing certain elements
 var showSideBar = true;
 var addCharacter = false;
+var showEventEdits = [false];
+var showCharacterEdits = [false, false];
 
 export default {
   name: "Home",
@@ -102,60 +132,61 @@ export default {
         {
           name: "Calender",
           intervals: 0,
-          events: [0]
+          events: [0],
         },
       ],
       characters: [
         {
           name: "Jane Doe",
-          timeline: 0
+          timeline: 0,
         },
         {
           name: "Gary Stue",
-          timeline: 1
-        }
+          timeline: 1,
+        },
       ],
       events: [
         {
-          name: "Start",
+          name: "Beginning of the Universe",
           start: 0,
           end: 1,
           description: "Lorem Ipsum",
           characters: [0],
-          id: 0
-        }
+          id: 0,
+        },
       ],
       showSideBar,
       addCharacter,
+      showEventEdits,
+      showCharacterEdits
     };
   },
   created() {
-    for(let i = 0; i<this.characters.length; i++){
-      if(this.characters[i].timeline == 1){
-        this.timelines.push(
-          {name: this.characters[i].name,
-          intervals: this.timelines[0].intervals}
-        )
+    for (let i = 0; i < this.characters.length; i++) {
+      if (this.characters[i].timeline == 1) {
+        this.timelines.push({
+          name: this.characters[i].name,
+          intervals: this.timelines[0].intervals,
+        });
       }
     }
   },
   methods: {
-    createCharacter(value){
-      console.log(value)
-      console.log("createcharacter")
-      this.characters.push({name: value})
-      console.log(this.characters.length)
+    createCharacter(value) {
+      this.characters.push({ name: value });
+      this.showCharacterEdits.push(false);
     },
-    createTimeline(value){
-      var arrayL = this.characters.length-1
-      if(value){
+    createTimeline(value) {
+      var arrayL = this.characters.length - 1;
+      if (value) {
         this.timelines.push({
-        name: this.characters[arrayL].name, 
-        timeline: 1,
-        intervals: this.timelines[0].intervals
-        })
+          name: this.characters[arrayL].name,
+          timeline: 1,
+          intervals: this.timelines[0].intervals,
+        });
       }
-    }
+    },
+    editEvent() {},
   },
 };
 </script>
@@ -167,7 +198,6 @@ export default {
 
 #sidebar {
   position: sticky;
-  overflow-x: auto;
 }
 
 #openmenu {
@@ -177,7 +207,7 @@ export default {
   vertical-align: top;
   max-height: 100%;
   overflow-y: hidden;
-  width: 200px;
+  width: 50px;
   top: 50%;
   left: 1rem;
   bottom: 0;
