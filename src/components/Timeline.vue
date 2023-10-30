@@ -1,5 +1,5 @@
 <template>
-    <div id="timeline" class="box">
+    <div id="timeline" class="box" color=color>
         <!--Timelinename-->
         <div class="title is-5"> 
             {{name}}
@@ -25,7 +25,8 @@ export default {
     },
     props: {
         name: String,
-        events: Array
+        events: Array,
+        color: String
     }
 }
 </script>

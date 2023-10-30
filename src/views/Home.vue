@@ -43,12 +43,16 @@
               <li v-for="(character, index) in this.characters" :key="index">
                 <button
                   class="button is-white"
-                  @click="this.showCharacterEdits[index] = !this.showCharacterEdits[index]">
+                  @click="
+                    this.showCharacterEdits[index] =
+                      !this.showCharacterEdits[index]
+                  "
+                >
                   {{ characters[index].name }}
                 </button>
                 <ul v-if="this.showCharacterEdits[index]">
                   <li><a>Edit Character</a></li>
-                  <li><a>Show Timeline</a> </li>
+                  <li><a>Show Timeline</a></li>
                   <li><a>Delete Character</a></li>
                 </ul>
               </li>
@@ -77,23 +81,41 @@
       <!--Title of the Universe-->
       <div class="title is-fixed">
         <p>Universe Name</p>
+        <hr />
       </div>
       <!--Area for editing the timeline-->
-      <div id="editingarea" class=" column is-auto columns is-multiline is-mobile">
+      <div
+        id="editingarea"
+        class="column is-auto columns is-multiline is-mobile"
+      >
         <!--Area for displaying different timelines-->
-        <div class="column">
-          <div class="box is-flex">
-            <!--timelinelist-->
-            <ul class="columns">
-              <li v-for="(timeline, index) in this.timelines" :key="index">
-                <timeline
-                  :name="timelines[index].name"
-                  :events="events"
-                  class="column is-full"
-                >
-                </timeline>
+        <div class="box is-flex">
+          <div class="columns is-multiline is-mobile">
+            <div class="column is-full">
+              <ul>
+                <li v-for="timeline in timelines" :key="index">
+                  <div>
+                    {{ timeline.name }}
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <ul class="column is-full">
+              <li v-for="event in events" :key="index">
+                <ul>
+                  <li v-for="index2 in event.end - event.start" :key="index2">
+                    <div class="columns">
+                      <div class="column is-1">
+                        {{ event.start + index2 }}
+                      </div>
+                    </div>
+                    <hr />
+                  </li>
+                </ul>
               </li>
             </ul>
+            <!--Eventliste-->
+            <div></div>
           </div>
         </div>
       </div>
@@ -118,6 +140,51 @@ var showSideBar = true;
 var addCharacter = false;
 var showEventEdits = [false];
 var showCharacterEdits = [false, false];
+var minutes = [];
+var hours = [minutes];
+var days = [hours];
+var weeks = [days];
+var months = [weeks];
+var years = [months];
+var decades = [years];
+var centuries = [decades];
+var millenia = [centuries];
+
+var events = [
+  {
+    name: "Beginning of the Universe",
+    start: 0,
+    end: 1,
+    description: "Lorem Ipsum",
+    characters: [0],
+    id: 0,
+  },
+  {
+    name: "Test",
+    start: 3,
+    end: 6,
+    description: "Lorem Ipsum",
+    characters: [1],
+    id: 1,
+  },
+  {
+    name: "Test2",
+    start: 8,
+    end: 10,
+    description: "Lorem Ipsum",
+    characters: [1],
+    id: 2,
+  },
+];
+console.log(events);
+
+var timeScale = [];
+
+for (var i = 0; i < events.length; i++) {
+  timeScale.push(events[i].end - events[i].start);
+}
+
+console.log(timeScale);
 
 export default {
   name: "Home",
@@ -145,20 +212,12 @@ export default {
           timeline: 1,
         },
       ],
-      events: [
-        {
-          name: "Beginning of the Universe",
-          start: 0,
-          end: 1,
-          description: "Lorem Ipsum",
-          characters: [0],
-          id: 0,
-        },
-      ],
+      events,
+      timeScale,
       showSideBar,
       addCharacter,
       showEventEdits,
-      showCharacterEdits
+      showCharacterEdits,
     };
   },
   created() {
@@ -187,6 +246,25 @@ export default {
       }
     },
     editEvent() {},
+    //Method to sort events chronologically
+    sortEvents(_events) {
+      var eventsSorted = [];
+      for (i = 0; i < _events.length; i++) {
+        var first = 0;
+        if (_events[i] < first) {
+          first = events[i].start;
+          eventsSorted.push(_events[i]);
+          _events = _events.splice(i, 1);
+          break;
+        }
+        if (_events.length > 0) {
+          this.sortEvents(_events);
+        }
+      }
+      console.log(eventsSorted);
+      return eventsSorted;
+    },
+    addEvent() {},
   },
 };
 </script>
@@ -194,6 +272,7 @@ export default {
 <style>
 #editingarea {
   overflow-x: scroll;
+  margin: 2rem;
 }
 
 #sidebar {
@@ -216,5 +295,9 @@ export default {
 
 #hidesidebar {
   transform: rotateY(180deg);
+}
+
+#timelines {
+  z-index: 1;
 }
 </style>
