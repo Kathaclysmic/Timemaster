@@ -6,11 +6,7 @@
         <aside class="column is-full menu is-pulled-left">
           <!--Button for toggeling sidebar-->
           <div>
-            <div
-              id="hidesidebar"
-              class="button is-ghost is-flex"
-              @click="this.showSideBar = !this.showSideBar"
-            >
+            <div id="hidesidebar" class="button is-ghost is-flex" @click="this.showSideBar = !this.showSideBar">
               <figure class="image is-16x16">
                 <img src="../assets/fast-forward.png" />
               </figure>
@@ -21,12 +17,9 @@
             <ul class="menu-list">
               <li><a>Add new event</a></li>
               <li v-for="(event, index) in this.events" :key="index">
-                <button
-                  class="button is-white"
-                  @click="
-                    this.showEventEdits[index] = !this.showEventEdits[index]
-                  "
-                >
+                <button class="button is-white" @click="
+                  this.showEventEdits[index] = !this.showEventEdits[index]
+                  ">
                   {{ events[index].name }}
                 </button>
                 <ul v-if="this.showEventEdits[index]">
@@ -41,13 +34,10 @@
                 <a>Add new character</a>
               </li>
               <li v-for="(character, index) in this.characters" :key="index">
-                <button
-                  class="button is-white"
-                  @click="
-                    this.showCharacterEdits[index] =
-                      !this.showCharacterEdits[index]
-                  "
-                >
+                <button class="button is-white" @click="
+                  this.showCharacterEdits[index] =
+                  !this.showCharacterEdits[index]
+                  ">
                   {{ characters[index].name }}
                 </button>
                 <ul v-if="this.showCharacterEdits[index]">
@@ -66,12 +56,8 @@
         </aside>
       </div>
     </div>
-    <div
-      id="openmenu"
-      class="button is-pulled-right is-ghost"
-      @click="this.showSideBar = !this.showSideBar"
-      v-if="!showSideBar"
-    >
+    <div id="openmenu" class="button is-pulled-right is-ghost" @click="this.showSideBar = !this.showSideBar"
+      v-if="!showSideBar">
       <figure class="image is-16x16">
         <img src="../assets/fast-forward.png" />
       </figure>
@@ -81,59 +67,34 @@
       <!--Title of the Universe-->
       <div class="title is-fixed">
         <p>Universe Name</p>
+        <!--TODO Edit name Button-->
         <hr />
       </div>
-      <!--Area for editing the timeline-->
-      <div
-        id="editingarea"
-        class="column is-auto columns is-multiline is-mobile"
-      >
-        <!--Area for displaying different timelines-->
-        <div class="box is-flex">
-          <div class="columns is-multiline is-mobile">
-            <div class="column is-full">
-              <ul>
-                <li v-for="timeline in timelines" :key="index">
-                  <div>
-                    {{ timeline.name }}
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <ul class="column is-full">
-              <li v-for="event in events" :key="index">
-                <ul>
-                  <li v-for="index2 in event.end - event.start" :key="index2">
-                    <div class="columns">
-                      <div class="column is-1">
-                        {{ event.start + index2 }}
-                      </div>
-                    </div>
-                    <hr />
-                  </li>
-                </ul>
-              </li>
-            </ul>
-            <!--Eventliste-->
-            <div></div>
+      <!-- TODO Area for editing the timeline-->
+      <div>
+        <!--TODO Grid for Timeline-->
+        <div>
+          <!--TODO Moments displayed at the top-->
+          <div> </div>
+          <!--TODO Character names being displayed on the left - starting point varrying depending on characters birthday-->
+          <div> </div>
+          <!--TODO Actual Timelines with events, make events draggable, for easy adjustments-->
+          <div> 
           </div>
         </div>
       </div>
     </div>
   </div>
-  <popup
-    v-if="addCharacter"
-    @close="this.addCharacter = !this.addCharacter"
-    @handleInput="createCharacter"
-    @handleTimeline="createTimeline"
-    class="column is-full"
-  ></popup>
+  <popup v-if="addCharacter" @close="this.addCharacter = !this.addCharacter" @handleInput="createCharacter"
+    @handleTimeline="createTimeline" class="column is-full"></popup>
 </template>
 
 <script>
 import event from "../components/Event.vue";
 import timeline from "../components/Timeline.vue";
 import popup from "../components/PopUp.vue";
+import draggable from 'vuedraggable'
+
 
 //Flags for showing certain elements
 var showSideBar = true;
@@ -192,9 +153,11 @@ export default {
     event,
     timeline,
     popup,
+    draggable
   },
   data() {
     return {
+      drag: false,
       timelines: [
         {
           name: "Calender",
@@ -245,7 +208,7 @@ export default {
         });
       }
     },
-    editEvent() {},
+    editEvent() { },
     //Method to sort events chronologically
     sortEvents(_events) {
       var eventsSorted = [];
@@ -264,7 +227,7 @@ export default {
       console.log(eventsSorted);
       return eventsSorted;
     },
-    addEvent() {},
+    addEvent() { },
   },
 };
 </script>
