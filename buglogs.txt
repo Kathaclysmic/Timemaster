@@ -1,0 +1,38 @@
+Side menu toggle disappeared
+=> Router stopped working, gotta find out why
+=> HelloWorld Import no difference => Probably trash
+=> Objects folder not the problem
+=> About is loading, problem not router, problem home (figured as much tbh)
+Problem Found: Lines 138 - 144, probably cause timescale still getting reffed somewhere
+Found ref, removed ref, Home working again
+
+{{ calcDur(event.bDate, event.eDate).[0] }} days, {{ calcDur(event.bDate, event.eDate).[1] }} months, {{ calcDur(event.bDate, event.eDate).[2] }} years, {{ calcDur(event.bDate, event.eDate).[3] }} hours, {{ calcDur(event.bDate, event.eDate).[4] }} minutes and {{ calcDur(event.bDate, event.eDate).[5] }} seconds.
+
+
+<!--TODO Grid for Timeline-->
+          <div class="columns is-multiline">
+            <!--TODO Worldevents (important occurences) displayed at the top-->
+            <div class="column is-full">
+              <!--Universal Null-->
+              <div id="column">
+                <event :cEvent=bEvent></event>
+                <div id="linecontainer">
+                  <div id="vl"></div>
+                </div>
+              </div>
+            </div>
+            <!--TODO Character names being displayed on the left - starting point varrying depending on characters birthday-->
+            <li v-for="(event, index) in this.characters" :key="index" class="column is-full">
+              <div class="column is-full" id="timeline">
+                <timeline :character=characters[index]></timeline>
+                <event :event="dummyEvent"></event>
+              </div>
+            </li>
+          </div>
+
+<GridLayout v-model:layout="gridLayout" :col-num=range :row-height="50" is-draggable is-resizable
+              use-css-transforms>
+              <template #item="{ item }">
+                {{ item.i }}
+              </template>
+            </GridLayout>

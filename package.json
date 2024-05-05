@@ -8,9 +8,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@melloware/coloris": "^0.24.0",
     "bulma": "^0.9.4",
     "bulma-extensions": "^6.2.7",
     "express": "^4.18.2",
+    "grid-layout-plus": "^1.0.5",
     "node.js": "^0.0.1-security",
     "pouchdb": "^8.0.1",
     "vue": "^3.2.25",

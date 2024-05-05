@@ -1,151 +1,205 @@
 <template>
-  <div class="columns is-mobile">
+  <div class="columns is-multiline">
+    <!--Topbar for navigation-->
+    <div class="column is-full">
+      <menubar></menubar>
+      <hr />
+    </div>
     <!--Menu for editing the timelines-->
-    <div v-if="showSideBar" class="column is-3" id="sidebar">
-      <div>
-        <aside class="column is-full menu is-pulled-left">
+    <div class="card" id="sidemenu">
+      <div class="button is-ghost is-pulled-left" @click="this.showSideBar = !this.showSideBar" v-if="!showSideBar">
+        <figure class="image is-16x16">
+          <img src="../assets/fast-forward.png" />
+        </figure>
+      </div>
+      <div v-if="showSideBar">
+        <div>
           <!--Button for toggeling sidebar-->
-          <div>
-            <div id="hidesidebar" class="button is-ghost is-flex" @click="this.showSideBar = !this.showSideBar">
-              <figure class="image is-16x16">
-                <img src="../assets/fast-forward.png" />
-              </figure>
+          <div class="button is-ghost is-pulled-left" @click="this.showSideBar = !this.showSideBar">
+            <figure class="image is-16x16">
+              <img id="sidemenubutton" src="../assets/fast-forward.png" />
+            </figure>
+          </div>
+        </div>
+        <div class="column is-2" id="sidebar">
+          <aside class="column is-full menu is-pulled-left">
+            <div>
+              <p class="menu-label">Events</p>
+              <ul class="menu-list">
+                <!--Buttons for eventmanagement-->
+                <li @click="toggleAdd('event')">
+                  <a>Add new event</a>
+                </li>
+                <li v-for="(event, index) in this.events" :key="index">
+                  <button class="button is-white" @click="
+                    this.showEventEdits[index] = !this.showEventEdits[index]
+                    ">
+                    {{ events[index].name }}
+                  </button>
+                  <ul v-if="this.showEventEdits[index]">
+                    <li><a>Edit Event</a></li>
+                    <li><a>Delete Event</a></li>
+                  </ul>
+                </li>
+              </ul>
+              <!--Subsection for CharacterCreation-->
+              <p class="menu-label">Characters</p>
+              <ul class="menu-list">
+                <li @click="toggleAdd('character')">
+                  <a>Add new character</a>
+                </li>
+                <li v-for="(character, index) in this.characters" :key="index">
+                  <button class="button is-white" @click="
+                    this.showCharacterEdits[index] =
+                    !this.showCharacterEdits[index]
+                    ">
+                    {{ characters[index].name }}
+                  </button>
+                  <ul v-if="this.showCharacterEdits[index]">
+                    <li><a>Edit Character</a></li>
+                    <li><a>Show Timeline</a></li>
+                    <li><a>Delete Character</a></li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </div>
+    <!--TimelineArea-->
+    <div class="column box" id="timelinearea">
+      <!--Editing area, show by default-->
+      <div v-if="timelineF">
+        <!--Title of the Universe-->
+        <div class="title is-fixed">
+          <p>Universe Name
+            <button class="button">Edit</button>
+          </p>
+          <!--TODO Edit name Button-->
+          <hr />
+        </div>
+        <!-- TODO Area for editing the timeline-->
+        <div class="columns is-multiline is-mobile">
+          <!--ZoomButtons-->
+          <div id="zoom">
+            <button class="button is-pulled-right" @click="handleZoomlevels('higher')">+</button>
+            <button class="button is-pulled-right" @click="handleZoomlevels('lower')">-</button>
+          </div>
+          <!--Grid for displaying Timelines and events-->
+          <div class="column is-full">
+            <!--Outergrid for names and axis-->
+            <div>
+              <ul>
+                <li v-for="(character, index) in this.characters" :key="index">
+                  <div>
+                    <div>
+                      {{ character.name }}
+                    </div>
+                    <div>
+                      <timeline :character=character></timeline>
+                    </div>
+                  </div>
+                </li>
+              </ul>
             </div>
           </div>
-          <div>
-            <p class="menu-label">Events</p>
-            <ul class="menu-list">
-              <li><a>Add new event</a></li>
-              <li v-for="(event, index) in this.events" :key="index">
-                <button class="button is-white" @click="
-                  this.showEventEdits[index] = !this.showEventEdits[index]
-                  ">
-                  {{ events[index].name }}
-                </button>
-                <ul v-if="this.showEventEdits[index]">
-                  <li><a>Edit Event</a></li>
-                  <li><a>Delete Event</a></li>
-                </ul>
-              </li>
-            </ul>
-            <p class="menu-label">Characters</p>
-            <ul class="menu-list">
-              <li @click="addCharacter = true">
-                <a>Add new character</a>
-              </li>
-              <li v-for="(character, index) in this.characters" :key="index">
-                <button class="button is-white" @click="
-                  this.showCharacterEdits[index] =
-                  !this.showCharacterEdits[index]
-                  ">
-                  {{ characters[index].name }}
-                </button>
-                <ul v-if="this.showCharacterEdits[index]">
-                  <li><a>Edit Character</a></li>
-                  <li><a>Show Timeline</a></li>
-                  <li><a>Delete Character</a></li>
-                </ul>
-              </li>
-            </ul>
-            <p class="menu-label">Universe</p>
-            <ul class="menu-list">
-              <li><a>Change Universe Name</a></li>
-              <li><a>Change Calender Intervals</a></li>
-            </ul>
-          </div>
-        </aside>
+        </div>
       </div>
-    </div>
-    <div id="openmenu" class="button is-pulled-right is-ghost" @click="this.showSideBar = !this.showSideBar"
-      v-if="!showSideBar">
-      <figure class="image is-16x16">
-        <img src="../assets/fast-forward.png" />
-      </figure>
-    </div>
-    <!--Editing area-->
-    <div class="column is-auto">
-      <!--Title of the Universe-->
-      <div class="title is-fixed">
-        <p>Universe Name</p>
-        <!--TODO Edit name Button-->
-        <hr />
+      <!--TODO Charakter Page, show instead of editing area if editing-->
+      <div v-if="characterF" class="columns is-multiline">
+        <!--Close-Button-->
+        <div class="column is-full">
+          <button class="button is-pulled-right" @click="this.returnToTimeline()">Close</button>
+        </div>
+        <div class="column is-full">
+          <charapage :character=dummy2 @charaSubmitted="handleCharaSubmitted"></charapage>
+        </div>
       </div>
-      <!-- TODO Area for editing the timeline-->
-      <div>
-        <!--TODO Grid for Timeline-->
-        <div>
-          <!--TODO Moments displayed at the top-->
-          <div> </div>
-          <!--TODO Character names being displayed on the left - starting point varrying depending on characters birthday-->
-          <div> </div>
-          <!--TODO Actual Timelines with events, make events draggable, for easy adjustments-->
-          <div> 
-          </div>
+      <!--TODO Event Page, shown instead of editing area if editing-->
+      <div v-if="eventF" class="columns is-multiline">
+        <div class="column is-full">
+          <button class="button is-pulled-right" @click="this.returnToTimeline()">Close</button>
+        </div>
+        <div class="column is-full">
+          <eventpage :event=dummyEvent> </eventpage>
         </div>
       </div>
     </div>
   </div>
-  <popup v-if="addCharacter" @close="this.addCharacter = !this.addCharacter" @handleInput="createCharacter"
-    @handleTimeline="createTimeline" class="column is-full"></popup>
 </template>
 
 <script>
+import { reactive, ref } from 'vue'
 import event from "../components/Event.vue";
 import timeline from "../components/Timeline.vue";
 import popup from "../components/PopUp.vue";
-import draggable from 'vuedraggable'
+import charapage from "../components/CharaPage.vue";
+import draggable from 'vuedraggable';
+import Character from '../objects/character.js';
+import menubar from "../components/Menubar.vue";
+import Event from "../objects/event.js";
+import eventpage from "../components/Eventpage.vue";
+import Universe from "../objects/universe.js";
 
 
 //Flags for showing certain elements
-var showSideBar = true;
+//toggles the side menu
+var showSideBar = false;
+//toggles the add character Popup
 var addCharacter = false;
+//Toggles the event sub menu popup
 var showEventEdits = [false];
+//Toggles the character sub menu popup
 var showCharacterEdits = [false, false];
-var minutes = [];
-var hours = [minutes];
-var days = [hours];
-var weeks = [days];
-var months = [weeks];
-var years = [months];
-var decades = [years];
-var centuries = [decades];
-var millenia = [centuries];
+//Flag for the timeline
+var timelineF = true;
+//flag for the character page
+var characterF = false;
+//flag for the event page
+var eventF = false;
 
+var zoom = 0;
+
+var scale = [0, 10];
+
+var charaIndex = 0;
+
+const bEvent = new Event("Beginning of the Universe", "Lorem Ipsum", [0, 0, 0, 0, 0, 0], [1, 1, 1, 1, 1, 1], [0], true);
+
+//Placeholder Character for new Characters
+const dummy = new Character("God", [0, 0, 0, 0, 0, 0], "Color", true, [bEvent], 0)
+
+
+//Placeholder Event for new events
+const dummyEvent = new Event("Epic Event", "Lorem Ipsum", [0, 0, 0, 0, 0, 0], [1, 1, 1, 1, 1, 1], [dummy.id], false)
+
+//array for storing characters
+var characters = []
+
+//Array for Storing Events
 var events = [
-  {
-    name: "Beginning of the Universe",
-    start: 0,
-    end: 1,
-    description: "Lorem Ipsum",
-    characters: [0],
-    id: 0,
-  },
-  {
-    name: "Test",
-    start: 3,
-    end: 6,
-    description: "Lorem Ipsum",
-    characters: [1],
-    id: 1,
-  },
-  {
-    name: "Test2",
-    start: 8,
-    end: 10,
-    description: "Lorem Ipsum",
-    characters: [1],
-    id: 2,
-  },
+  bEvent
 ];
-console.log(events);
 
-var timeScale = [];
+var worldEvents = [bEvent];
 
-for (var i = 0; i < events.length; i++) {
-  timeScale.push(events[i].end - events[i].start);
-}
 
-console.log(timeScale);
+
+//Placeholder Character for new Characters
+const dummy2 = new Character("Name", [0, 0, 0, 0, 0, 0], "Color", true, [], 1)
+
+characters[0] = dummy;
+
+
+var layout = reactive([
+  { x: 0, y: 0, w: 2, h: 2, i: '0' },
+  { x: 2, y: 0, w: 2, h: 4, i: '1' }
+])
+
+var universe = new Universe("Universe Name", characters, events)
+
+var shownCharacters = [];
 
 export default {
   name: "Home",
@@ -153,11 +207,29 @@ export default {
     event,
     timeline,
     popup,
-    draggable
+    draggable,
+    charapage,
+    menubar,
+    eventpage,
+  },
+  setup() {
+    const forceUpdateTrigger = ref(0);
+
+    function forceUpdate() {
+      forceUpdateTrigger.value += 1;
+    }
+
+    return {
+      forceUpdate
+    };
   },
   data() {
+    this.drawGrid();
     return {
+      submittedChara: {},
       drag: false,
+      bEvent,
+      //DUMMY Timelines for testing
       timelines: [
         {
           name: "Calender",
@@ -165,47 +237,130 @@ export default {
           events: [0],
         },
       ],
-      characters: [
-        {
-          name: "Jane Doe",
-          timeline: 0,
-        },
-        {
-          name: "Gary Stue",
-          timeline: 1,
-        },
-      ],
+      //DUMMY Characters for Testing
+      characters,
       events,
-      timeScale,
       showSideBar,
       addCharacter,
       showEventEdits,
       showCharacterEdits,
+      timelineF,
+      characterF,
+      eventF,
+      dummy,
+      dummy2,
+      dummyEvent,
+      layout,
+      charaIndex,
+      zoom,
+      range: scale[1] - scale[0],
+      shownCharacters
     };
   },
-  created() {
-    for (let i = 0; i < this.characters.length; i++) {
-      if (this.characters[i].timeline == 1) {
-        this.timelines.push({
-          name: this.characters[i].name,
-          intervals: this.timelines[0].intervals,
-        });
-      }
-    }
-  },
   methods: {
-    createCharacter(value) {
-      this.characters.push({ name: value });
-      this.showCharacterEdits.push(false);
+    //method to handle zoomlevels
+    handleZoomlevels(_dir) {
+      if (_dir === "higher") {
+        if (zoom > 0) {
+          zoom--;
+        } else {
+          zoom = zoom;
+        }
+      }
+      if (_dir === "lower") {
+        zoom++;
+      }
     },
-    createTimeline(value) {
-      var arrayL = this.characters.length - 1;
-      if (value) {
-        this.timelines.push({
-          name: this.characters[arrayL].name,
-          timeline: 1,
-          intervals: this.timelines[0].intervals,
-        });
+    //calculate how many columns are needed
+    calculateScale() {
+      switch (zoom) {
+        case 0 || 1:
+          scale = [0, 60]
+          break;
+        case 2:
+          scale = [0, 24]
+          break;
+        case 3:
+          scale = [0, 31]
+          break;
+        case 4:
+          scale = [0, 12]
+          break;
+        default:
+          scale = [0, 10]
+      }
+    },
+    //Method to Calculate and draw timeaxis
+    drawAxis() {
+      var axis = [];
+      for (let i = 0; i < scale[1] - scale[0]; i++) {
+        axis.push(
+          { x: 1, y: 0, w: 1, h: 1, i: i, static: true }
+        )
+      }
+      return axis;
+    },
+    //Method to draw the grid that displays the characters, timelines and events
+    drawGrid() {
+      layout.length = 0;
+      this.charaIndex = 0;
+      shownCharacters.length = 0;
+      console.log("drawgrid characters ", characters)
+      for (let i = 0; i < characters.length; i++) {
+        var cChara = characters[i];
+        //draw timeaxis
+        //layout.concat(this.drawAxis());
+        //draw lines for each character
+        if (cChara.show === true) {
+          this.charaIndex = i;
+          shownCharacters.push(this.charaIndex);
+          console.log("shownCharacters Array drawGrid Loop ", shownCharacters)
+          layout.push(
+            { x: 0, y: i * 3, w: 1, h: 3, i: cChara.name, static: true }
+          )
+        }
+      }
+    },
+    //Handling submitted character data
+    handleCharaSubmitted(data) {
+      console.log("characters before submit ", characters)
+      var nameCount = 1;
+      var currentdate = new Date();
+      var random = Math.floor(Math.random() * 1000);
+      var id = random + currentdate.getDate() + (currentdate.getMonth() + 1) + currentdate.getFullYear() + currentdate.getHours() + currentdate.getMinutes() + currentdate.getSeconds();
+      this.submittedChara = data;
+      //check for two characters with same name
+      for (let i = 0; i < characters.length; i++) {
+        if (characters[i].name === this.submittedChara.cName) {
+          nameCount++;
+        }
+      }
+      if (nameCount > 1) {
+        this.submittedChara.nameDup = nameCount;
+      }
+      this.submittedChara.cBday.name = this.submittedChara.cName + "'s Birth";
+      var newChar = new Character(this.submittedChara.cName, this.submittedChara.cBday, "NA", this.submittedChara.cShow, [this.submittedChara.cBday], id)
+      characters.push(newChar)
+      events.push(newChar.birthday)
+      this.drawGrid()
+    },
+    //Methods to Toggle visible areas
+    returnToTimeline() {
+      this.timelineF = true;
+      this.characterF = false;
+      this.eventF = false;
+    },
+    //toggles between normal view, adding character page and adding events
+    toggleAdd(_field) {
+      if (_field == "character") {
+        this.characterF = true;
+        this.eventF = false;
+        this.timelineF = false;
+      }
+      if (_field == "event") {
+        this.eventF = true;
+        this.characterF = false;
+        this.timelineF = false;
       }
     },
     editEvent() { },
@@ -224,7 +379,6 @@ export default {
           this.sortEvents(_events);
         }
       }
-      console.log(eventsSorted);
       return eventsSorted;
     },
     addEvent() { },
@@ -233,8 +387,63 @@ export default {
 </script>
 
 <style>
+#name {
+  width: fit-content;
+}
+
+#innerGrid {
+  width: 80%;
+  overflow: scroll;
+}
+
+#grid {
+  margin-top: 2rem;
+  margin-left: 1rem;
+  position: relative;
+  display: inline-flex;
+}
+
+#vl {
+  border-left: 6px solid rgb(3, 3, 3);
+  z-index: -1;
+  height: 90vh;
+}
+
+#zoom {
+  width: 100vw;
+  margin-right: 3%;
+}
+
+
+#linecontainer {
+  position: absolute;
+  left: 50%;
+}
+
+#timelinearea {
+  z-index: 0;
+  overflow-y: scroll;
+  height: 90vh;
+  width: 100%;
+}
+
+#column {
+  position: relative;
+  margin-left: 10rem;
+  width: fit-content;
+}
+
+#timeline {
+  position: relative;
+  margin-bottom: 2.5%;
+}
+
+#sidemenu {
+  height: 90vh;
+  overflow: scroll;
+}
+
 #editingarea {
-  overflow-x: scroll;
   margin: 2rem;
 }
 
@@ -242,22 +451,9 @@ export default {
   position: sticky;
 }
 
-#openmenu {
-  z-index: 3;
-  position: sticky;
-  display: inline-block;
-  vertical-align: top;
-  max-height: 100%;
-  overflow-y: hidden;
-  width: 50px;
-  top: 50%;
-  left: 1rem;
-  bottom: 0;
-  padding: 30px;
-}
-
-#hidesidebar {
+#sidemenubutton {
   transform: rotateY(180deg);
+
 }
 
 #timelines {

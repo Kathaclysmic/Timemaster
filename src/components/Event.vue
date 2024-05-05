@@ -1,32 +1,31 @@
 <template>
-  <div class="box">
-    <div class="title is-4">
-      {{ label }}
-    </div>
-    <div>
-      {{ description }}
-    </div>
+  <div id="box" @mouseover="upHere = true" @mouseleave="upHere = false" class="box">
+    <p v-if="upHere" class="title is-7 is-centered">
+      {{ cEvent.name }}</p>
   </div>
 </template>
 
 <script>
+var box = document.getElementById("box")
+
+console.log(box)
 
 export default {
   name: "event",
   props: {
-    label: String,
-    description: String,
-    date: String,
-    time: String,
-    timelines: Number,
-    groups: Array,
-    characters: Array,
+    cEvent: Object
   },
+  data() {
+    return {
+      upHere: false
+    }
+  }
 };
 </script>
 
 <style scoped>
-.box {
-  width: 100%;
+#box {
+  background-color:blue;
+  height:fit-content;
 }
 </style>
