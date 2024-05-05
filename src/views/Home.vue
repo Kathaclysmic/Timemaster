@@ -122,7 +122,7 @@
           <button class="button is-pulled-right" @click="this.returnToTimeline()">Close</button>
         </div>
         <div class="column is-full">
-          <eventpage :event=dummyEvent> </eventpage>
+          <eventPage :event=dummyEvent> </eventPage>
         </div>
       </div>
     </div>
@@ -139,7 +139,7 @@ import draggable from 'vuedraggable';
 import Character from '../objects/character.js';
 import menubar from "../components/Menubar.vue";
 import Event from "../objects/event.js";
-import eventpage from "../components/Eventpage.vue";
+import eventPage from "../components/Eventpage.vue";
 import Universe from "../objects/universe.js";
 
 
@@ -210,7 +210,7 @@ export default {
     draggable,
     charapage,
     menubar,
-    eventpage,
+    eventPage,
   },
   setup() {
     const forceUpdateTrigger = ref(0);
