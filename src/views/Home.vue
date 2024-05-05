@@ -139,7 +139,7 @@ import draggable from 'vuedraggable';
 import Character from '../objects/character.js';
 import menubar from "../components/Menubar.vue";
 import Event from "../objects/event.js";
-import eventPage from "../components/Eventpage.vue";
+import eventPage from "../components/EventPage.vue";
 import Universe from "../objects/universe.js";
 
 

@@ -52,11 +52,6 @@
 <script>
 import Event from "../objects/event"
 
-import Coloris from "@melloware/coloris";
-
-Coloris.init();
-Coloris({ el: "#coloris" });
-
 var defBDay;
 
 export default {
