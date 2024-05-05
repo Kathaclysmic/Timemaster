@@ -44,7 +44,7 @@
             <label for="checkbox">Show Timeline {{charaData.cShow }}</label>
         </div>
         <form @submit.prevent="submitChara">
-            <button type="submit">Fertig</button>
+            <button>Save</button>
         </form>
     </div>
 </template>
@@ -61,7 +61,6 @@ export default {
     },
     methods: {
         submitChara() {
-            console.log("SUBMIT CHARA")
             this.$emit('charaSubmitted', this.charaData)
         }
     },

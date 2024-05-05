@@ -122,7 +122,7 @@
           <button class="button is-pulled-right" @click="this.returnToTimeline()">Close</button>
         </div>
         <div class="column is-full">
-          <eventPage :event=dummyEvent> </eventPage>
+          <eventPage :event=dummyEvent @eventSubmitted="handleEventSubmitted"> </eventPage>
         </div>
       </div>
     </div>
@@ -141,7 +141,6 @@ import menubar from "../components/Menubar.vue";
 import Event from "../objects/event.js";
 import eventPage from "../components/EventPage.vue";
 import Universe from "../objects/universe.js";
-
 
 //Flags for showing certain elements
 //toggles the side menu
@@ -170,7 +169,6 @@ const bEvent = new Event("Beginning of the Universe", "Lorem Ipsum", [0, 0, 0, 0
 //Placeholder Character for new Characters
 const dummy = new Character("God", [0, 0, 0, 0, 0, 0], "Color", true, [bEvent], 0)
 
-
 //Placeholder Event for new events
 const dummyEvent = new Event("Epic Event", "Lorem Ipsum", [0, 0, 0, 0, 0, 0], [1, 1, 1, 1, 1, 1], [dummy.id], false)
 
@@ -181,24 +179,17 @@ var characters = []
 var events = [
   bEvent
 ];
-
 var worldEvents = [bEvent];
-
-
 
 //Placeholder Character for new Characters
 const dummy2 = new Character("Name", [0, 0, 0, 0, 0, 0], "Color", true, [], 1)
-
 characters[0] = dummy;
-
-
 var layout = reactive([
   { x: 0, y: 0, w: 2, h: 2, i: '0' },
   { x: 2, y: 0, w: 2, h: 4, i: '1' }
 ])
 
 var universe = new Universe("Universe Name", characters, events)
-
 var shownCharacters = [];
 
 export default {
@@ -207,36 +198,16 @@ export default {
     event,
     timeline,
     popup,
-    draggable,
     charapage,
     menubar,
     eventPage,
-  },
-  setup() {
-    const forceUpdateTrigger = ref(0);
-
-    function forceUpdate() {
-      forceUpdateTrigger.value += 1;
-    }
-
-    return {
-      forceUpdate
-    };
   },
   data() {
     this.drawGrid();
     return {
       submittedChara: {},
-      drag: false,
+      submittedEvent: {},
       bEvent,
-      //DUMMY Timelines for testing
-      timelines: [
-        {
-          name: "Calender",
-          intervals: 0,
-          events: [0],
-        },
-      ],
       //DUMMY Characters for Testing
       characters,
       events,
@@ -305,7 +276,6 @@ export default {
       layout.length = 0;
       this.charaIndex = 0;
       shownCharacters.length = 0;
-      console.log("drawgrid characters ", characters)
       for (let i = 0; i < characters.length; i++) {
         var cChara = characters[i];
         //draw timeaxis
@@ -314,7 +284,6 @@ export default {
         if (cChara.show === true) {
           this.charaIndex = i;
           shownCharacters.push(this.charaIndex);
-          console.log("shownCharacters Array drawGrid Loop ", shownCharacters)
           layout.push(
             { x: 0, y: i * 3, w: 1, h: 3, i: cChara.name, static: true }
           )
@@ -323,26 +292,33 @@ export default {
     },
     //Handling submitted character data
     handleCharaSubmitted(data) {
-      console.log("characters before submit ", characters)
-      var nameCount = 1;
       var currentdate = new Date();
       var random = Math.floor(Math.random() * 1000);
       var id = random + currentdate.getDate() + (currentdate.getMonth() + 1) + currentdate.getFullYear() + currentdate.getHours() + currentdate.getMinutes() + currentdate.getSeconds();
       this.submittedChara = data;
-      //check for two characters with same name
-      for (let i = 0; i < characters.length; i++) {
-        if (characters[i].name === this.submittedChara.cName) {
-          nameCount++;
-        }
-      }
-      if (nameCount > 1) {
-        this.submittedChara.nameDup = nameCount;
-      }
       this.submittedChara.cBday.name = this.submittedChara.cName + "'s Birth";
       var newChar = new Character(this.submittedChara.cName, this.submittedChara.cBday, "NA", this.submittedChara.cShow, [this.submittedChara.cBday], id)
       characters.push(newChar)
       events.push(newChar.birthday)
       this.drawGrid()
+    },
+    //Method to handle submitted events
+    handleEventSubmitted(data) {
+      var newEvent = new Event(data.cName, data.cDesc, data.cBdate, data.cEdate, [0], data.cWorldEvent)
+      console.log(newEvent)
+      events.push(newEvent)
+      for(let z = 0; z < newEvent.characters.length; z++){
+        console.log("first loop ", newEvent.characters[z])
+        for(let y = 0; y < characters.length; y ++){
+          console.log("second loop ", characters[y].id)
+          if(characters[y].id === newEvent.characters[z]){
+            console.log("if")
+            characters[y].events.push(newEvent)
+            console.log(events)
+          }
+        }
+      }
+      this.drawGrid();
     },
     //Methods to Toggle visible areas
     returnToTimeline() {

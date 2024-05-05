@@ -8,8 +8,6 @@
 <script>
 var box = document.getElementById("box")
 
-console.log(box)
-
 export default {
   name: "event",
   props: {

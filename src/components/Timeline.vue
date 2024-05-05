@@ -20,10 +20,7 @@ import event from "../components/Event.vue"
 import { GridLayout, GridItem } from 'grid-layout-plus'
 
 var layoutInner = reactive([])
-
 var yVar = 0;
-
-console.log("LAYOUT INNER AFTER CREATION ", layoutInner)
 
 export default {
     name: "timeline",
@@ -40,29 +37,18 @@ export default {
         //method to draw the events on each timeline
         drawInnerLayout() {
             layoutInner = reactive([])
-            console.log("DRAW INNER LAYOUT")
-            console.log(layoutInner)
             layoutInner.length = 0;
-            console.log(layoutInner)
-            console.log("drawinnerlayout cChara ", this.character)
             //draw events on character i timeline
             for (let j = 0; j < this.character.events.length; j++) {
                 var cEvent = this.character.events[j];
-                console.log("y ", yVar)
-                console.log("cEvent ", cEvent)
-                console.log("layout inner before push ", layoutInner)
                 layoutInner.push(
                     { x: cEvent.bDate[5], y: yVar, w: cEvent.eDate[5] - cEvent.bDate[5], h: 3, i: cEvent.name, static: false }
                 )
-                console.log("layout inner ", layoutInner)
             }
         },
     },
     setup(){
-        layoutInner = []
-        console.log("TIMELINE")
-        console.log("layout inner data ", layoutInner)
-        
+        layoutInner = []       
     },
     data() {
         this.drawInnerLayout();
@@ -74,7 +60,9 @@ export default {
 </script>
 
 <style scoped>
-#layoutInner {}
+#layoutInner {
+    height: fit-content;
+}
 
 #timeline {}
 
