@@ -13,14 +13,22 @@
 
 <script>
 import mbutton from "./mButton.vue";
-import { ref } from 'vue';
 
 export default {
   name: "Menubar",
   components: {
     mbutton,
   },
-  setup() {
+  props: {
+    universe: Object
+  },
+  data() {
+    console.log(this.universe)
+    return {
+
+    }
+  },
+  setup(universe) {
     const jsonData = 
     {
       "name": "John",
@@ -29,8 +37,8 @@ export default {
     }
     const saveJson = () => {
       try {
-        console.log(jsonData)
-        const blob = new Blob([jsonData], { type: 'application/json' });
+        const json = JSON.stringify(universe)
+        const blob = new Blob([json], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;

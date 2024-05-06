@@ -2,7 +2,7 @@
   <div class="columns is-multiline">
     <!--Topbar for navigation-->
     <div class="column is-full">
-      <menubar></menubar>
+      <menubar :universe=universe></menubar>
       <hr />
     </div>
     <!--Menu for editing the timelines-->
@@ -225,7 +225,8 @@ export default {
       charaIndex,
       zoom,
       range: scale[1] - scale[0],
-      shownCharacters
+      shownCharacters,
+      universe
     };
   },
   methods: {
